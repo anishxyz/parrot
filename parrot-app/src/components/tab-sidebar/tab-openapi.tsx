@@ -1,11 +1,12 @@
 import {Input} from "@/components/ui/input"
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {Button} from "@/components/ui/button";
+import {openApiContext} from "@/app/page";
 
 export default function TabOpenapi() {
     const [openapiValue, setOpenapiValue] = useState('');
-    const [apiContent, setApiContent] = useState('');
+    const { apiContent, setApiContent } = useContext(openApiContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
