@@ -26,7 +26,7 @@ export default function TabOpenapi() {
 
     return (
         <div className={'h-full flex flex-col'}>
-            <div className="flex items-center">
+            <div className="flex items-center border-b-2">
                 <Input
                     className='rounded-none focus-visible:ring-transparent mt-1 mb-1 border-0 pb-2'
                     placeholder="api.company.com/openapi.json"
