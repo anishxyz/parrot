@@ -1,20 +1,26 @@
+import os
+from fastapi import FastAPI
+
 from typing import Union
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+import logging
 from openai import OpenAI
 
 app = FastAPI()
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 @app.get("/")
 def read_root():
-    client = OpenAI()
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/test")
+def test():
+    client = OpenAI()
+
+    asst_id = os.environ["OPENAI_PARROT_AGENT_ASST"]
+    return {"item_id": asst_id}
