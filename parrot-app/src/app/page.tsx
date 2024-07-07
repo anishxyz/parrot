@@ -12,13 +12,13 @@ export default function Home() {
                 direction="horizontal"
                 className="rounded-lg border"
             >
-                <ResizablePanel defaultSize={25}>
+                <ResizablePanel defaultSize={50}>
                     <div className="flex p-6">
                         <span className="font-semibold">Sidebar</span>
                     </div>
                 </ResizablePanel>
                 <ResizableHandle withHandle/>
-                <ResizablePanel defaultSize={75}>
+                <ResizablePanel defaultSize={50}>
                     <TabSidebar/>
                 </ResizablePanel>
             </ResizablePanelGroup>
