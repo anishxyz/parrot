@@ -3,7 +3,6 @@
 import {useState} from 'react';
 import {Button} from "@/components/ui/button";
 import TabOpenapi from "@/components/tab-sidebar/tab-openapi";
-import {ResizablePanelGroup, ResizablePanel, ResizableHandle} from "@/components/ui/resizable";
 
 export default function TabSidebar() {
     const [activeTab, setActiveTab] = useState('agent');

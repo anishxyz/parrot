@@ -1,5 +1,5 @@
 import {Input} from "@/components/ui/input"
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {Button} from "@/components/ui/button";
 
@@ -8,20 +8,6 @@ export default function TabOpenapi() {
     const [apiContent, setApiContent] = useState('');
 
     const [isLoading, setIsLoading] = useState(false);
-    // const [maxHeight, setMaxHeight] = useState(window.innerHeight);
-    //
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         setMaxHeight(window.innerHeight);
-    //     };
-    //
-    //     window.addEventListener('resize', handleResize);
-    //
-    //     // Cleanup function to remove the event listener
-    //     return () => {
-    //         window.removeEventListener('resize', handleResize);
-    //     };
-    // }, []);
 
     const fetchOpenApiJson = async () => {
         if (openapiValue) {
