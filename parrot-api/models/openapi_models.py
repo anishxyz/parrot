@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class Asset(BaseModel):
+class Resource(BaseModel):
     name: str
     dependents: List[str]
     inputs: List[str]

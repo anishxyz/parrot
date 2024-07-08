@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import List, Dict, Optional, Tuple
 
 import networkx as nx
@@ -6,13 +5,13 @@ import requests
 from anytree import Node, RenderTree
 from networkx import DiGraph
 
-from openapi_utils import standardize_asset_name, get_last_route_segment, last_part_has_id, resolve_schema_ref
-from models.openapi_models import Asset
+from utils.openapi_utils import standardize_asset_name, get_last_route_segment, last_part_has_id, resolve_schema_ref
+from models.openapi_models import Resource
 import logging
 
 
-def organize_resources(spec) -> List[Asset]:
-    node_registry: Dict[str, Asset] = {}
+def organize_resources(spec) -> List[Resource]:
+    node_registry: Dict[str, Resource] = {}
 
     get_assets = set()
     dependent_assets = set()
@@ -107,7 +106,7 @@ def organize_resources(spec) -> List[Asset]:
             all_tags.add(standardize_asset_name(_tag))
 
             curr_asset = standardize_asset_name(get_last_route_segment(path))
-            new_node = Asset(
+            new_node = Resource(
                 name=curr_asset,
                 dependents=list(dependents),
                 inputs=list(inputs),
@@ -118,7 +117,7 @@ def organize_resources(spec) -> List[Asset]:
 
             if curr_asset not in node_registry:
                 node_registry[curr_asset] = new_node
-            elif len(node_registry[curr_asset].dependent_assets) < len(dependents):
+            elif len(node_registry[curr_asset].dependents) < len(dependents):
                 node_registry[curr_asset] = new_node
 
     logging.debug(dependent_assets)
@@ -127,33 +126,33 @@ def organize_resources(spec) -> List[Asset]:
     nodes = list(node_registry.values())
     real_nodes = []
     for node in nodes:
-        curr_asset = node.asset_name
+        curr_asset = node.name
         if curr_asset in get_assets or curr_asset in dependent_assets or curr_asset in all_tags:
             real_nodes.append(node)
         else:
-            logging.debug(f"Removing {node.asset_name}")
+            logging.debug(f"Removing {node.name}")
 
     return real_nodes
 
 
-def build_dependency_tree(nodes: List[Asset]):
+def build_dependency_tree(nodes: List[Resource]):
     graph = nx.DiGraph()
 
     for graph_node in nodes:
-        graph.add_node(graph_node.asset_name)
+        graph.add_node(graph_node.name)
 
     # edges based on dependencies
     for graph_node in nodes:
-        for dependent_asset in graph_node.dependent_assets:
-            graph.add_edge(dependent_asset, graph_node.asset_name)
+        for dependent_asset in graph_node.dependents:
+            graph.add_edge(dependent_asset, graph_node.name)
         logging.debug("-" * 50)
-        logging.debug(graph_node.asset_name)
-        logging.debug(f"Children: {graph_node.dependent_assets}")
+        logging.debug(graph_node.name)
+        logging.debug(f"Children: {graph_node.dependents}")
 
     return graph
 
 
-def process_openapi(openapi: Optional[dict], openapi_url: Optional[str]) -> Tuple[List[Asset], DiGraph]:
+def process_openapi(openapi: Optional[dict] = None, openapi_url: Optional[str] = None) -> Tuple[List[Resource], DiGraph]:
     if not openapi_url and not openapi:
         raise ValueError("no api spec provided")
     if openapi_url and openapi:
@@ -169,13 +168,13 @@ def process_openapi(openapi: Optional[dict], openapi_url: Optional[str]) -> Tupl
     return asset_nodes, graph
 
 
-# DiGraph
+# DiGraph - networkx nodes
 def get_sink_nodes(graph):
     sink_nodes = [node for node in graph.nodes() if graph.out_degree(node) == 0]
     return sink_nodes
 
 
-def build_tree_for_node(graph: DiGraph, node):
+def build_tree_for_node(graph: DiGraph, node):  # networkx node
     nodes_dict = {}
 
     root = Node(node)

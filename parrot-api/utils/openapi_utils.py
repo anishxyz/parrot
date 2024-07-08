@@ -1,3 +1,4 @@
+import json
 import re
 from inflect import engine
 
@@ -64,3 +65,7 @@ def last_part_has_id(route: str) -> bool:
 
     return bool(re.match(r'^\{.*\}$', last_part) or last_part.endswith('_id'))
 
+
+def parse_spec(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)

@@ -5,7 +5,7 @@ from typing import Union
 
 from dotenv import load_dotenv
 import logging
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 app = FastAPI()
 
@@ -20,7 +20,14 @@ def read_root():
 
 @app.get("/test")
 def test():
-    client = OpenAI()
+
+    return {"item_id": "asst_id"}
+
+
+@app.post("/run")
+def run():
+    client = AsyncOpenAI()
 
     asst_id = os.environ["OPENAI_PARROT_AGENT_ASST"]
-    return {"item_id": asst_id}
+
+    return {"Hello": "World"}
