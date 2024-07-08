@@ -71,13 +71,5 @@ def run_api_call(route: str, method: str, base_url: str, headers: Optional[dict]
             return {'status_code': response.status_code, 'detail': response.text}
 
 
-def get_dependency_trees(resource_name: str, graph):
-    # generate dependency tree
-
-
-
-    pass
-
-
 def get_routes_for_asset():
     pass
