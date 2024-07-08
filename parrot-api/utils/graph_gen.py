@@ -1,7 +1,10 @@
-from typing import List, Dict, Optional
+from collections import defaultdict
+from typing import List, Dict, Optional, Tuple
 
 import networkx as nx
 import requests
+from anytree import Node, RenderTree
+from networkx import DiGraph
 
 from openapi_utils import standardize_asset_name, get_last_route_segment, last_part_has_id, resolve_schema_ref
 from models.openapi_models import Asset
@@ -150,9 +153,11 @@ def build_dependency_tree(nodes: List[Asset]):
     return graph
 
 
-def process_openapi(openapi: Optional[dict], openapi_url: Optional[str]):
+def process_openapi(openapi: Optional[dict], openapi_url: Optional[str]) -> Tuple[List[Asset], DiGraph]:
     if not openapi_url and not openapi:
-        raise ValueError("No api spec provided")
+        raise ValueError("no api spec provided")
+    if openapi_url and openapi:
+        raise ValueError("provide an openapi spec OR openapi_url")
     if openapi_url:
         response = requests.get(openapi_url)
         response.raise_for_status()
@@ -161,6 +166,40 @@ def process_openapi(openapi: Optional[dict], openapi_url: Optional[str]):
     asset_nodes = organize_resources(openapi)
     graph = build_dependency_tree(asset_nodes)
 
+    return asset_nodes, graph
 
 
+# DiGraph
+def get_sink_nodes(graph):
+    sink_nodes = [node for node in graph.nodes() if graph.out_degree(node) == 0]
+    return sink_nodes
 
+
+def build_tree_for_node(graph: DiGraph, node):
+    nodes_dict = {}
+
+    root = Node(node)
+    nodes_dict[node] = root
+
+    # dfs
+    stack = [node]
+    visited = set()
+
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            for pred in graph.predecessors(node):
+                if pred not in nodes_dict:
+                    nodes_dict[pred] = Node(pred, parent=nodes_dict[node])
+                else:
+                    nodes_dict[pred].parent = nodes_dict[node]
+                stack.append(pred)
+    return root
+
+
+def tree_to_str(root: Node) -> str:
+    tree_str = f"Tree for {root.name}:\n"
+    for pre, _, node in RenderTree(root):
+        tree_str += "%s%s\n" % (pre, node.name)
+    return tree_str
