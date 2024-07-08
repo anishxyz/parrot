@@ -174,6 +174,13 @@ def get_sink_nodes(graph):
     return sink_nodes
 
 
+def get_node_from_graph(resource_name: str, graph: DiGraph):
+    for node in graph.nodes():
+        if node.name == resource_name:
+            return node
+    return None
+
+
 def build_tree_for_node(graph: DiGraph, node):  # networkx node
     nodes_dict = {}
 
@@ -198,7 +205,7 @@ def build_tree_for_node(graph: DiGraph, node):  # networkx node
 
 
 def tree_to_str(root: Node) -> str:
-    tree_str = f"Tree for {root.name}:\n"
+    tree_str = f"Dependency tree for {root.name}:\n"
     for pre, _, node in RenderTree(root):
         tree_str += "%s%s\n" % (pre, node.name)
     return tree_str
