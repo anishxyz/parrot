@@ -138,16 +138,16 @@ def organize_resources(spec) -> List[Resource]:
 def build_dependency_tree(nodes: List[Resource]):
     graph = nx.DiGraph()
 
-    for graph_node in nodes:
-        graph.add_node(graph_node.name)
+    for resource in nodes:
+        graph.add_node(resource.name)
 
     # edges based on dependencies
-    for graph_node in nodes:
-        for dependent_asset in graph_node.dependents:
-            graph.add_edge(dependent_asset, graph_node.name)
+    for resource in nodes:
+        for dependent_asset in resource.dependents:
+            graph.add_edge(dependent_asset, resource.name)
         logging.debug("-" * 50)
-        logging.debug(graph_node.name)
-        logging.debug(f"Children: {graph_node.dependents}")
+        logging.debug(resource.name)
+        logging.debug(f"Children: {resource.dependents}")
 
     return graph
 
@@ -176,7 +176,7 @@ def get_sink_nodes(graph):
 
 def get_node_from_graph(resource_name: str, graph: DiGraph):
     for node in graph.nodes():
-        if node.name == resource_name:
+        if node == resource_name:
             return node
     return None
 

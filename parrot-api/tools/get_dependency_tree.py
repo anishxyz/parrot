@@ -11,7 +11,7 @@ def get_dependency_tree(resource_name: str, graph: DiGraph):
 
     Function Call
     {
-      "description": "Retrieves the dependency trees of a given API resource",
+      "description": "Retrieves the dependency trees of a given API resource. Items shown with no following dependencies are leafs (you do not need to re-request a dependency tree for them)\nFor example if you have a graph RESOURCE_1 -> RESOURCE_2, you can assume RESOURCE_2 has no children (or it would be shown)",
       "name": "get_dependency_tree",
       "parameters": {
         "type": "object",
