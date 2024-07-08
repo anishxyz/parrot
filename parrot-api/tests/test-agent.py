@@ -39,60 +39,56 @@ run = client.beta.threads.runs.create_and_poll(
     tool_choice="required"
 )
 
-if run.status == 'completed':
-    messages = client.beta.threads.messages.list(
-        thread_id=thread.id
-    )
-    print(messages)
-else:
-    print(run.status)
+while run.status == "requires_action":
+    # Define the list to store tool outputs
+    tool_outputs = []
 
-# Define the list to store tool outputs
-tool_outputs = []
+    print("len tools", len(run.required_action.submit_tool_outputs.tool_calls))
+    # Loop through each tool in the required action section
+    for tool in run.required_action.submit_tool_outputs.tool_calls:
+        print(tool)
+        arguments = json.loads(tool.function.arguments)
+        if tool.function.name == "run_api_call":
 
-# Loop through each tool in the required action section
-for tool in run.required_action.submit_tool_outputs.tool_calls:
-    print(tool)
-    arguments = json.loads(tool.function.arguments)
-    if tool.function.name == "run_api_call":
+            api_out = run_api_call(
+                route=arguments['route'],
+                method=arguments['method'],
+                data=arguments.get("data", None),
+                base_url=BASE_URL,
+                headers=HEADERS
+            )
 
-        api_out = run_api_call(
-            route=arguments['route'],
-            method=arguments['method'],
-            data=arguments.get("data", None),
-            base_url=BASE_URL,
-            headers=HEADERS
-        )
+            tool_outputs.append({
+                "tool_call_id": tool.id,
+                "output": str(api_out)
+            })
+        elif tool.function.name == "get_dependency_tree":
 
-        tool_outputs.append({
-            "tool_call_id": tool.id,
-            "output": str(api_out)
-        })
-    elif tool.function.name == "get_dependency_tree":
+            tree_out = get_dependency_tree(
+                resource_name=arguments["resource_name"],
+                graph=graph
+            )
 
-        tree_out = get_dependency_tree(
-            resource_name=arguments["resource_name"],
-            graph=graph
-        )
+            tool_outputs.append({
+                "tool_call_id": tool.id,
+                "output": tree_out
+            })
 
-        tool_outputs.append({
-            "tool_call_id": tool.id,
-            "output": tree_out
-        })
+    # Submit all tool outputs at once after collecting them in a list
+    if tool_outputs:
+        try:
+            run = client.beta.threads.runs.submit_tool_outputs_and_poll(
+                thread_id=thread.id,
+                run_id=run.id,
+                tool_outputs=tool_outputs
+            )
+            print("Tool outputs submitted successfully.")
+        except Exception as e:
+            print("Failed to submit tool outputs:", e)
+    else:
+        print("No tool outputs to submit.")
+        break
 
-# Submit all tool outputs at once after collecting them in a list
-if tool_outputs:
-    try:
-        run = client.beta.threads.runs.submit_tool_outputs_and_poll(
-            thread_id=thread.id,
-            run_id=run.id,
-            tool_outputs=tool_outputs
-        )
-        print("Tool outputs submitted successfully.")
-    except Exception as e:
-        print("Failed to submit tool outputs:", e)
-else:
-    print("No tool outputs to submit.")
 
 if run.status == 'completed':
     messages = client.beta.threads.messages.list(

@@ -1,3 +1,5 @@
+import logging
+
 from networkx import DiGraph
 
 from utils.graph_gen import get_node_from_graph, build_tree_for_node, tree_to_str
@@ -11,7 +13,7 @@ def get_dependency_tree(resource_name: str, graph: DiGraph):
 
     Function Call
     {
-      "description": "Retrieves the dependency trees of a given API resource. Items shown with no following dependencies are leafs (you do not need to re-request a dependency tree for them)\nFor example if you have a graph RESOURCE_1 -> RESOURCE_2, you can assume RESOURCE_2 has no children (or it would be shown)",
+      "description": "Retrieves the dependency trees of a given API resource. Items shown with no following dependencies are leaves (you do not need to re-request a dependency tree for them). For example, if you have a graph PARENT_RESOURCE -> CHILD_RESOURCE, you can assume CHILD_RESOURCE has no children. If a resource has NO dependencies, it will just be returned",
       "name": "get_dependency_tree",
       "parameters": {
         "type": "object",
@@ -31,5 +33,8 @@ def get_dependency_tree(resource_name: str, graph: DiGraph):
     node = get_node_from_graph(resource_name=resource_name, graph=graph)
     root_node = build_tree_for_node(graph=graph, node=node)
 
-    return tree_to_str(root_node)
+    tree_str = tree_to_str(root_node)
+    logging.info(tree_str)
+
+    return tree_str
 
