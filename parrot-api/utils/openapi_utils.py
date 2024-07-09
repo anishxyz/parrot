@@ -1,17 +1,20 @@
 import json
 import re
+
+import jsonref
 from inflect import engine
 
 
 def resolve_schema_ref(spec, schema):
     if isinstance(schema, dict):
-        if '$ref' in schema:
-            ref = schema['$ref']
-            parts = ref.split('/')
-            current = spec
-            for part in parts[1:]:  # Skip the first '#' part
-                current = current[part]
-            return resolve_schema_ref(spec, current)
+        # schema is pre-resolved
+        # if '$ref' in schema:
+        #     ref = schema['$ref']
+        #     parts = ref.split('/')
+        #     current = spec
+        #     for part in parts[1:]:  # Skip the first '#' part
+        #         current = current[part]
+        #     return resolve_schema_ref(spec, current)
 
         resolved_schema = {}
         for key, value in schema.items():
@@ -68,4 +71,30 @@ def last_part_has_id(route: str) -> bool:
 
 def parse_spec(file_path):
     with open(file_path, 'r') as file:
-        return json.load(file)
+        return jsonref.load(file)
+
+
+def parse_properties(properties):
+    lines = []
+    for key, value in properties.items():
+        title = value.get('title', key.capitalize())  # Fallback to key if title is not present
+        type_info = value.get('type', 'Unknown Type')
+        lines.append(f"{title} ({key}): {type_info}")
+    return "\n".join(lines)
+
+
+def parse_schema(schema):
+    output = []
+    if "properties" in schema:
+        title = schema.get('title', 'Untitled Schema')
+        properties = parse_properties(schema['properties'])
+        output.append(f"{title}\n{properties}\n")
+    elif "oneOf" in schema or "allOf" in schema:
+        key = "oneOf" if "oneOf" in schema else "allOf"
+        for s in schema[key]:
+            output.append(parse_schema(s))
+    return "\n".join(output)
+
+
+def schema_to_string(schema):
+    return parse_schema(schema)

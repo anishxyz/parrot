@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 import httpx
 
@@ -53,6 +54,7 @@ def run_api_call(route: str, method: str, base_url: str, headers: Optional[dict]
     """
 
     url = f"{base_url}/{route.strip('/')}"
+    logging.info(url)
     with httpx.Client(headers=headers) as client:
         if method.upper() == 'POST':
             response = client.post(url, json=data)
@@ -66,9 +68,13 @@ def run_api_call(route: str, method: str, base_url: str, headers: Optional[dict]
             return {"error": f"Unsupported method: {method}"}
 
         if response.is_success:
-            return response.json()
+            res = response.json()
+            logging.info(res)
+            return res
         else:
-            return {'status_code': response.status_code, 'detail': response.text}
+            res = {'status_code': response.status_code, 'detail': response.text}
+            logging.info(res)
+            return res
 
 
 def get_routes_for_asset():
