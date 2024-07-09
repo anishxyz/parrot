@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 client = OpenAI()
 asst_id = os.environ["OPENAI_PARROT_AGENT_ASST"]
 BASE_URL = "https://api.egp.scale.com"
-HEADERS = {"x-api-key": "c5ae00cd-6190-41cd-802e-b2d848b11fb8", "x-selected-account-id": "6630377a5a7b09c735cfeebb"}
+HEADERS = {"x-api-key": "c5ae00cd-6190-41cd-802e-b2d848b11fb8"}  # "x-selected-account-id": "6630377a5a7b09c735cfeebb"
 
 test_spec = "test-openapi.json"
 openapi_json = parse_spec(test_spec)
@@ -29,7 +29,7 @@ asset_nodes, graph = process_openapi(openapi=openapi_json)
 logging.info(asset_nodes)
 logging.info(graph)
 
-user_query = "I want to create an evaluation dataset with 10 test cases about ohio."
+user_query = "I want to create a question set with 10 questions about ohio. create the question set and questions. use the account id '6630377a5a7b09c735cfeebb'."
 
 thread = start_thread(client=client, assets=asset_nodes, user_query=user_query)
 logging.info(thread.id)
@@ -58,7 +58,7 @@ while run.status == "requires_action":
             api_out = run_api_call(
                 route=arguments['route'],
                 method=arguments['method'],
-                data=arguments.get("data", None),
+                data=arguments.get("requestBody", None),
                 base_url=BASE_URL,
                 headers=HEADERS
             )

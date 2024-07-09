@@ -39,10 +39,9 @@ def run_api_call(route: str, method: str, base_url: str, headers: Optional[dict]
             ],
             "description": "The HTTP method to be used for the request. Supported methods are GET, POST, PATCH, and DELETE."
           },
-          "data": {
+          "requestBody": {
             "type": "object",
-            "description": "The JSON payload for methods that send data. It is optional and defaults to None if not provided.",
-            "nullable": true
+            "description": "The JSON payload for methods that send data. You should use this for POST requests as this will be passed in (without modifications) as the data"
           }
         },
         "required": [
