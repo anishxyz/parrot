@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from tools.fetch_api_spec import fetch_api_spec
 from tools.get_dependency_tree import get_dependency_tree
 from tools.run_api_call import run_api_call
 from utils.agent_utils import start_thread
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 client = OpenAI()
 asst_id = os.environ["OPENAI_PARROT_AGENT_ASST"]
 BASE_URL = "https://api.egp.scale.com"
-HEADERS = {"x-api-key": "key"}
+HEADERS = {"x-api-key": "c5ae00cd-6190-41cd-802e-b2d848b11fb8", "x-selected-account-id": "6630377a5a7b09c735cfeebb"}
 
 test_spec = "test-openapi.json"
 openapi_json = parse_spec(test_spec)
@@ -42,8 +43,12 @@ run = client.beta.threads.runs.create_and_poll(
 while run.status == "requires_action":
     # Define the list to store tool outputs
     tool_outputs = []
+    num_tools = len(run.required_action.submit_tool_outputs.tool_calls)
+    print("len tools", num_tools)
 
-    print("len tools", len(run.required_action.submit_tool_outputs.tool_calls))
+    if num_tools == 0:
+        break
+
     # Loop through each tool in the required action section
     for tool in run.required_action.submit_tool_outputs.tool_calls:
         print(tool)
@@ -72,6 +77,17 @@ while run.status == "requires_action":
             tool_outputs.append({
                 "tool_call_id": tool.id,
                 "output": tree_out
+            })
+        elif tool.function.name == "fetch_api_spec":
+            api_info = fetch_api_spec(
+                resource_name=arguments["resource_name"],
+                assets=asset_nodes,
+                openapi=openapi_json,
+            )
+
+            tool_outputs.append({
+                "tool_call_id": tool.id,
+                "output": api_info
             })
 
     # Submit all tool outputs at once after collecting them in a list
