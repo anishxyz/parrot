@@ -2,11 +2,11 @@ import {Input} from "@/components/ui/input"
 import {useContext, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {Button} from "@/components/ui/button";
-import {openApiContext} from "@/app/page";
+import {useOpenApi} from "@/context/OpenApiContext";
 
 export default function TabOpenapi() {
     const [openapiValue, setOpenapiValue] = useState('');
-    const { apiContent, setApiContent } = useContext(openApiContext);
+    const { apiContent, setApiContent } = useOpenApi();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export default function TabOpenapi() {
             try {
                 const response = await fetch(openapiValue);
                 const json = await response.json();
-                setApiContent(JSON.stringify(json, null, 2));  // Pretty print JSON
+                setApiContent(json);
             } catch (error) {
                 console.error('Failed to fetch OpenAPI JSON:', error);
                 setApiContent('{ "error": "Failed to load API content." }');
@@ -53,7 +53,7 @@ export default function TabOpenapi() {
                     // height="100%"
                     defaultLanguage="json"
                     defaultValue="// Enter OpenAPI JSON"
-                    value={apiContent}
+                    value={JSON.stringify(apiContent, null, 2)}
                     options={{
                         minimap: {enabled: false}
                     }}

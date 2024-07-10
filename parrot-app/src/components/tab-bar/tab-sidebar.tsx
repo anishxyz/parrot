@@ -3,9 +3,10 @@
 import {useState} from 'react';
 import {Button} from "@/components/ui/button";
 import TabOpenapi from "@/components/tab-bar/tab-openapi";
+import {useOpenApi} from "@/context/OpenApiContext";
 
 export default function TabSidebar() {
-    const [activeTab, setActiveTab] = useState('agent');
+    const { activeTab, setActiveTab } = useOpenApi();
 
     return (
         <div className='w-full h-full flex flex-col'>

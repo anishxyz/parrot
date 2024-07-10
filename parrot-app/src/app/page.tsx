@@ -5,26 +5,15 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import TabSidebar from "@/components/tab-sidebar/tab-sidebar";
-import {createContext, Dispatch, SetStateAction, useState} from "react";
+import TabSidebar from "@/components/tab-bar/tab-sidebar";
+import {OpenApiProvider} from "@/context/OpenApiContext";
 
-interface ApiContextType {
-    apiContent: string;
-    setApiContent: Dispatch<SetStateAction<string>>;
-}
 
-const openApiContext = createContext<ApiContextType>({
-    apiContent: '',
-    setApiContent: () => {}, // Default no-op function
-});
-
-export { openApiContext };
 
 export default function Home() {
-    const [apiContent, setApiContent] = useState('');
 
     return (
-        <openApiContext.Provider value={{apiContent, setApiContent}}>
+        <OpenApiProvider>
             <div className="w-screen h-screen">
                 <ResizablePanelGroup
                     direction="horizontal"
@@ -41,7 +30,7 @@ export default function Home() {
                     </ResizablePanel>
                 </ResizablePanelGroup>
             </div>
-        </openApiContext.Provider>
+        </OpenApiProvider>
 
     );
 }
