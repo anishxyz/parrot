@@ -5,8 +5,9 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import TabSidebar from "@/components/tab-bar/tab-sidebar";
+import TabSidebar from "@/components/tab-bar/TabSidebar";
 import {OpenApiProvider} from "@/context/OpenApiContext";
+import UserPanel from "@/components/user-panel/UserPanel";
 
 
 
@@ -20,9 +21,7 @@ export default function Home() {
                     className="rounded-lg border"
                 >
                     <ResizablePanel defaultSize={50}>
-                        <div className="flex p-6">
-                            <span className="font-semibold">Sidebar</span>
-                        </div>
+                        <UserPanel/>
                     </ResizablePanel>
                     <ResizableHandle withHandle/>
                     <ResizablePanel defaultSize={50}>

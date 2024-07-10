@@ -5,6 +5,8 @@ interface OpenApiContextType {
     setApiContent: React.Dispatch<React.SetStateAction<any>>;
     activeTab: string;
     setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+    activeAgent: boolean;
+    setActiveAgent: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OpenApiContext = createContext<OpenApiContextType | null>(null);
@@ -16,9 +18,10 @@ interface OpenApiProviderProps {
 export const OpenApiProvider: React.FC<OpenApiProviderProps> = ({ children }) => {
     const [apiContent, setApiContent] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<string>('agent');
+    const [activeAgent, setActiveAgent] = useState<boolean>(false);
 
     return (
-        <OpenApiContext.Provider value={{ apiContent, setApiContent, activeTab, setActiveTab }}>
+        <OpenApiContext.Provider value={{ apiContent, setApiContent, activeTab, setActiveTab, activeAgent, setActiveAgent }}>
             {children}
         </OpenApiContext.Provider>
     );
