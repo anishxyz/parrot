@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import {Button} from "@/components/ui/button";
-import TabOpenapi from "@/components/tab-bar/tab-openapi";
+import TabOpenapi from "@/components/tab-bar/tabOpenapi";
 import {useOpenApi} from "@/context/OpenApiContext";
 
 export default function TabSidebar() {
