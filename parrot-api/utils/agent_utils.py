@@ -6,10 +6,10 @@ from openai import AsyncOpenAI, OpenAI
 from models.openapi_models import Resource
 
 
-def start_thread(
+async def start_thread(
         assets: List[Resource],
         user_query: str,
-        client: OpenAI,
+        async_client: AsyncOpenAI,
 ):
     asset_names = [str(asset.name) for asset in assets]
 
@@ -20,7 +20,7 @@ Your goal is to complete the users request below:
 {}
 """.format('\n'.join(asset_names), user_query)
 
-    message_thread = client.beta.threads.create(
+    message_thread = await async_client.beta.threads.create(
         messages=[
             {
                 "role": "user",
