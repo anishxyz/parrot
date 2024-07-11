@@ -16,7 +16,7 @@ interface AgentKickoffRequest {
 }
 
 export default function UserPanel() {
-    const { apiContent, agentLogs, setAgentLogs } = useOpenApi();
+    const { apiContent, setActiveTab, agentLogs, setAgentLogs } = useOpenApi();
     const [headers, setHeaders] = useState<Header[]>([
         { name: "Authorization", value: "Bearer <token>" },
         { name: "Content-Type", value: "application/json" },
@@ -57,6 +57,7 @@ export default function UserPanel() {
         };
 
         setAgentLogs([]); // Clear logs
+        setActiveTab('agent'); // Switch to agent tab
 
         try {
             const url = 'http://127.0.0.1:8000/query';
