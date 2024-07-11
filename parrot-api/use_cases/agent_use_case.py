@@ -123,7 +123,7 @@ class AgentUseCase:
                 yield AgentLog(
                     type=AgentLogType.TOOL_OUT,
                     message=f"Tool complete: {tool.function.name}",
-                    metadata=tool_output if tool.function.name not in {"fetch_api_spec"} else {}
+                    metadata={"output": output} if tool.function.name not in {"fetch_api_spec"} else {}
                 ).model_dump_json()
 
                 tool_outputs.append(tool_output)
