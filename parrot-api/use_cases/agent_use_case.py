@@ -35,6 +35,12 @@ class AgentUseCase:
         headers = params.headers
         base_url = params.base_url
 
+        yield AgentLog(
+            type=AgentLogType.INFO,
+            message="Agent preprocessing...",
+            metadata={}
+        ).model_dump_json()
+
         start = datetime.now()
 
         json_str = json.dumps(params.openapi)
@@ -72,14 +78,14 @@ class AgentUseCase:
             # execute tool requests
             for tool in run.required_action.submit_tool_outputs.tool_calls:
                 logging.info(f"Tool called: {tool}")
+                arguments = json.loads(tool.function.arguments)
 
                 yield AgentLog(
                     type=AgentLogType.TOOL_IN,
                     message=f"Running tool: {tool.function.name}",
-                    metadata={}
+                    metadata=arguments
                 ).model_dump_json()
 
-                arguments = json.loads(tool.function.arguments)
                 output = "Tool not found"
                 if tool.function.name == "run_api_call":
 
