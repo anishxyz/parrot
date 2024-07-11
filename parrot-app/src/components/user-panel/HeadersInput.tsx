@@ -5,8 +5,8 @@
  */
 "use client"
 
-import React, { useState } from "react"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import React from "react"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -41,8 +41,17 @@ export default function HeadersInput({ headers, setHeaders }: HeadersInputProps)
     return (
         <Card className="w-full">
             <CardHeader>
-                <CardTitle>API Headers</CardTitle>
-                <CardDescription>Manage the headers that will be sent with your API requests.</CardDescription>
+                <div className='flex items-start justify-between'>
+                    <div>
+                        <CardTitle className='mb-2' >API Headers</CardTitle>
+                        <CardDescription>Manage the headers that will be sent with your API requests.</CardDescription>
+                    </div>
+                    <div>
+                        <Button size="sm" variant="outline" onClick={addHeader} className="ml-auto">
+                            + Add Header
+                        </Button>
+                    </div>
+                </div>
             </CardHeader>
             <CardContent>
                 <Table>
@@ -50,11 +59,6 @@ export default function HeadersInput({ headers, setHeaders }: HeadersInputProps)
                         <TableRow>
                             <TableHead>Header Name</TableHead>
                             <TableHead>Header Value</TableHead>
-                            <TableHead>
-                                <Button size="sm" variant="outline" onClick={addHeader} className="ml-auto">
-                                    Add
-                                </Button>
-                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
