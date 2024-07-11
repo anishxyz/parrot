@@ -1,8 +1,9 @@
 'use client'
 
 import {Button} from "@/components/ui/button";
-import TabOpenapi from "@/components/tab-bar/TabOpenapi";
 import {useOpenApi} from "@/context/OpenApiContext";
+import TabOpenapi from "@/components/tab-bar/TabOpenapi";
+import TabAgent from "@/components/tab-bar/TabAgent";
 
 export default function TabSidebar() {
     const { activeTab, setActiveTab } = useOpenApi();
@@ -30,6 +31,9 @@ export default function TabSidebar() {
             </div>
             <div className={'flex-grow overflow-auto'} style={{display: activeTab === 'openapi' ? 'block' : 'none'}}>
                 <TabOpenapi/>
+            </div>
+            <div className={'flex-grow overflow-auto'} style={{display: activeTab === 'agent' ? 'block' : 'none'}}>
+                <TabAgent/>
             </div>
         </div>
 
