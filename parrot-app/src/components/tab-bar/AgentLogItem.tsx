@@ -20,7 +20,7 @@ export default function AgentLogItem({ type, message, metadata, terminal }: Agen
                     <p>{message}</p>
                 </div>
                 {metadata && Object.keys(metadata).length > 0 && (
-                    <div className="bg-muted rounded-md p-2 text-xs text-muted-foreground">
+                    <div className="bg-muted rounded-md p-2 text-xs text-muted-foreground overflow-x-auto">
                         <pre>{JSON.stringify(metadata, null, 2)}</pre>
                     </div>
                 )}
