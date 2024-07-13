@@ -97,7 +97,7 @@ class AgentUseCase:
                         headers=headers,
                     )
 
-                    output = str(api_out)
+                    output = api_out
                 elif tool.function.name == "get_dependency_tree":
 
                     tree_out = get_dependency_tree(
@@ -117,7 +117,7 @@ class AgentUseCase:
 
                 tool_output = {
                     "tool_call_id": tool.id,
-                    "output": output
+                    "output": str(output)
                 }
 
                 yield AgentLog(

@@ -71,7 +71,7 @@ def run_api_call(route: str, method: str, base_url: str, headers: Optional[dict]
             logging.info(res)
             return res
         else:
-            res = {'status_code': response.status_code, 'detail': response.text}
+            res = {'status_code': response.status_code, 'detail': response.json()}
             logging.info(res)
             return res
 
