@@ -1,2 +1,4 @@
 TODOS
-[ ] handle api key input auto via openapi spec on frontend
+[ ] handle api key security scheme input auto via openapi spec on frontend
+[ ] re write resource tree builder
+[ ] generalize for stripe api
